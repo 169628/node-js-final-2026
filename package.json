@@ -1,0 +1,27 @@
+{
+  "name": "fitness-backend-final",
+  "version": "1.0.0",
+  "private": true,
+  "description": "健身房後端 API — 最終作業。前端是成品，後端由你打造。",
+  "scripts": {
+    "start": "echo '⛔ 公約①：請把這個 script 換成啟動你後端的指令（例如 node bin/www.js），它要在 PORT 環境變數指定的 port 起 server' && exit 1",
+    "test": "jest --runInBand",
+    "test:m1": "jest test/m1.test.js --runInBand",
+    "test:m2": "jest test/m2.test.js --runInBand",
+    "test:m3": "jest test/m3.test.js --runInBand",
+    "test:m4": "jest test/m4.test.js --runInBand",
+    "test:m5": "jest test/m5.test.js --runInBand",
+    "test:m6": "jest test/m6.test.js --runInBand",
+    "test:smoke": "jest test/smoke.test.js --runInBand",
+    "db:reset": "docker compose down -v && docker compose up -d"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 15000
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "supertest": "^7.0.0"
+  }
+}
