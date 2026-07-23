@@ -20,7 +20,7 @@ function verifyRoute(prefix, route, method) {
     return notNeedAuth;
   }
 
-  if (config === Array) {
+  if (Array.isArray(config)) {
     for (const pattern of config) {
       // 字串完全匹配
       if (typeof pattern === "string" && subRoute === pattern) {
