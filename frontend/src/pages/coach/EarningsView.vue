@@ -93,11 +93,11 @@
     <div
       class="bg-primary-800 p-6 rounded-lg shadow-md border border-primary-600 text-center"
     >
-      <h4 class="text-lg font-medium text-primary-400 mb-2">課程數量</h4>
+      <h4 class="text-lg font-medium text-primary-400 mb-2">本月報名數</h4>
       <p class="text-4xl font-bold text-success-600">
         {{ revenueData.course_count }}
       </p>
-      <p class="text-lg text-primary-300 mt-1">堂課程</p>
+      <p class="text-lg text-primary-300 mt-1">筆報名</p>
     </div>
   </div>
 
