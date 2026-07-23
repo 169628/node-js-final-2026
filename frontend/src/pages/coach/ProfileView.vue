@@ -223,6 +223,11 @@ async function updateCoachProfile() {
     if (Object.hasOwn(error.response, "data")) {
       const { message } = error.response.data;
       msg = message;
+
+      if (status === "failed") {
+        swalHandler(proxy.$swal, message);
+        return;
+      }
     }
 
     throw new Error(`[updateCoachProfile] error : ${msg}`);
