@@ -113,6 +113,17 @@ describe('M5-3 四句逐字 UI 合約（前端 modal 靠這些字串，一字不
     expect(res.body.message).toBe('請先登入');
   });
 
+  test('報名一堂不存在的課程（合法 uuid 但查無此課）→ 失敗（檢查：課程不存在）', async () => {
+    // courseId 查無此課程。會員有堂數、也沒報過任何課，
+    // 「ID錯誤」不在四句固定訊息裡（驗收只看 4xx + status: failed），所以這裡不逐字比對 message。
+    const member = await signupAndLogin();
+    const pkg = await createCreditPackage({ credit_amount: 7, price: 1400 });
+    expectSuccess(await buyPackage(member.token, pkg.id));
+
+    const res = await bookCourse(member.token, randomUUID());
+    expectFailed(res);
+  });
+
   test('同一會員報同一堂課第二次 → 失敗且 message 逐字等於「已經報名過此課程」', async () => {
     // 堂數充足（7 堂）、名額充足（10 人），唯一的錯誤條件只有「已報名」
     const coach = await makeCoach();
