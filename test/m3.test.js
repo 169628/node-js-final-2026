@@ -249,6 +249,35 @@ describe('M3 升級教練與教練後台', () => {
       expect(check.body.data.name).toBe(newName);
       expect(Number(check.body.data.max_participants)).toBe(8);
     });
+
+    test('用另一個教練的 token 更新別人的課程 → 失敗（只能改自己的課）', async () => {
+      const owner = await makeCoach();
+      const stranger = await makeCoach();
+      const skill = await createSkill();
+      const course = await createCourse(owner.token, skill.id);
+
+      // 外人送一份「欄位都合法」的更新，唯一該擋下來的理由只有「這不是他的課」
+      const res = await api()
+        .put(`/api/admin/coaches/courses/${course.id}`)
+        .set('Authorization', `Bearer ${stranger.token}`)
+        .send({
+          skill_id: skill.id,
+          name: randName('被外人改的課'),
+          description: '外人嘗試覆蓋別人的課程',
+          start_at: futureUtc(14),
+          end_at: futureUtc(14, 2),
+          max_participants: 8,
+          meeting_url: 'https://example.com/hijack',
+        });
+      expectFailed(res);
+
+      // 行為驗證：課主再查一次，內容要維持原樣（沒有被外人蓋掉）
+      const check = await api()
+        .get(`/api/admin/coaches/courses/${course.id}`)
+        .set('Authorization', `Bearer ${owner.token}`);
+      expectSuccess(check);
+      expect(check.body.data.name).toBe(course.name);
+    });
   });
 
   describe('教練課程列表 GET /api/admin/coaches/courses', () => {
