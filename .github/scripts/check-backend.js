@@ -9,7 +9,7 @@ function fail(message) {
 }
 
 if (!fs.existsSync(backendPackagePath)) {
-  fail('⛔ 找不到 backend/package.json：本機開發時後端可以放在 repo 外面；正式繳交前，請把它搬進本 repo 的 backend/。')
+  fail('⛔ 找不到 backend/package.json：請確認已在專案根目錄建立 backend/，並將其 commit、push。')
 }
 
 let backendPackage
