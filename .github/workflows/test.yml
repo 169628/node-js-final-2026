@@ -52,7 +52,7 @@ jobs:
       - name: 安裝依賴
         run: npm install
 
-      - name: 檢查 backend/ 已搬進 repo（正式繳交必備）
+      - name: 檢查 backend/ 結構
         run: node .github/scripts/check-backend.js
 
       - name: 安裝後端依賴
