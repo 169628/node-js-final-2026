@@ -55,17 +55,17 @@ npm install express cors dotenv pg
 npm install -D nodemon
 ```
 
-6. 承上，初始化並安裝套件完成後，請開啟 `backend/package.json`，在 `scripts` 中加入後端的啟動指令。
+6. 承上，初始化並安裝套件完成後，接著開啟 `backend/package.json`，在 `scripts` 中設定後端的啟動指令。以下範例假設實際負責啟動伺服器的入口檔案為 `backend/bin/www.js`，在 `scripts` 設置：
 
-以下範例假設實際負責啟動伺服器的入口檔案為 `backend/bin/www.js`：
+```
+"dev": "nodemon ./bin/www.js",
+"start": "node ./bin/www.js"
+```
 
-* 加入 `"dev": "nodemon ./bin/www.js"`
-  之後可在 `backend/` 執行 `npm run dev`，透過 nodemon 啟動後端；當程式碼變更時，後端會自動重新啟動。
+* `npm run dev`：開發期使用，透過 nodemon 啟動後端，當程式碼變更時，會自動重新啟動
+* `npm start`：直接透過 Node.js 啟動後端，不會自動重新啟動。（GitHub Actions 驗收時會使用 `npm start`，所以記得要加上這個設定。）
 
-* 加入 `"start": "node ./bin/www.js"`
-  之後可在 `backend/` 執行 `npm start`，直接透過 Node.js 啟動後端；當程式碼變更時，不會自動重新啟動。
-
-⚠️ 啟動指令中的路徑，必須指向實際負責啟動伺服器的入口檔案。如果你的入口檔案是 `server.js`、`app.js`，或位於其他資料夾，請依照實際的專案結構調整路徑。
+⚠️ 啟動指令需指向實際負責啟動伺服器的入口檔案。如果你的入口檔案是 `server.js`、`app.js` 或其他路徑，請依照實際的專案結構調整指令。
 
 
 **整體環境架構說明：**
