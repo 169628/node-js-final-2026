@@ -1,17 +1,21 @@
-require('dotenv').config()
 const { DataSource } = require('typeorm')
+const config = require("../src/config/index")
+
+const Skill = require("./entities/Skill")
+
+const { host,port,username,password,database,synchronize,ssl } = config.db
 
 const dataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  synchronize: process.env.DB_SYNCHRONIZE === 'true',
-  ssl: process.env.DB_ENABLE_SSL === 'true',
+  host,
+  port: Number(port),
+  username,
+  password,
+  database,
+  synchronize,
+  ssl,
   entities: [
-    // 今天的 entities 會一個一個長出來
+    Skill
   ],
 })
 

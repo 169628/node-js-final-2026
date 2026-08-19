@@ -16,13 +16,17 @@ app.get('/healthcheck', (req, res) => {
 
 // 404（W3）
 app.use((req, res) => {
-  res.status(404).json({ status: 'failed', message: '無此路由' })
+  res.status(404).json({ status: 'error', message: '無此路由' })
+  return
 })
 
 // 錯誤處理守門員（W4：四個參數）
 app.use((err, req, res, next) => {
-  console.error(err)
-  res.status(500).json({ status: 'failed', message: '伺服器錯誤' })
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    status: statusCode === 500 ? "error" : "failed",
+    message: err.message || "伺服器錯誤",
+  });
 })
 
 module.exports = app
