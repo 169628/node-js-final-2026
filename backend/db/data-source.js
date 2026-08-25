@@ -2,6 +2,7 @@ const { DataSource } = require('typeorm')
 const config = require("../src/config/index")
 
 const Skill = require("./entities/Skill")
+const CreditPackage = require("./entities/CreditPackage")
 
 const { host,port,username,password,database,synchronize,ssl } = config.db
 
@@ -15,7 +16,11 @@ const dataSource = new DataSource({
   synchronize,
   ssl,
   entities: [
-    Skill
+    Skill,
+    CreditPackage
+  ],
+  migrations: [
+    __dirname + '/migrations/*.js'
   ],
 })
 

@@ -3,7 +3,9 @@ const cors = require('cors')
 
 const app = express()
 
-app.use(cors())          // W3：前端在 3000、我們在 8080，沒它前端全被擋
+const skillRouter = require("./routes/skill")
+
+app.use(cors())          
 app.use(express.json())
 
 // M0：健康檢查——回純文字 OK，不是 JSON；路徑不在 /api 底下
@@ -13,6 +15,7 @@ app.get('/healthcheck', (req, res) => {
 
 // 之後每完成一個里程碑，路由就多掛一條：
 // app.use('/api/credit-package', require('./routes/creditPackage'))
+app.use("/api/coaches/skill", skillRouter);
 
 // 404（W3）
 app.use((req, res) => {

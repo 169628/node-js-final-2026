@@ -14,15 +14,20 @@ async function main() {
   await clearAll()
 
   const skillRepo = dataSource.getRepository('Skill')
+  const packageRepo = dataSource.getRepository('CreditPackage')
 //   const userRepo = dataSource.getRepository('User')
 //   const courseRepo = dataSource.getRepository('Course')
-//   const packageRepo = dataSource.getRepository('CreditPackage')
 
-  // 1. 先種「被指著」的表：SKILL、USER（COURSE 的外來鍵指著它們）
   const [boxing, swimming, pilates] = await skillRepo.save([
     { name: '拳擊' },
     { name: '游泳' },
     { name: '皮拉提斯' },
+  ])
+  
+  await packageRepo.save([
+    { name: '7 堂組合包方案', credit_amount: 7, price: 1400 },
+    { name: '14 堂組合包方案', credit_amount: 14, price: 2520 },
+    { name: '21 堂組合包方案', credit_amount: 21, price: 4800 },
   ])
 
 //   const [ming, hua] = await userRepo.save([
@@ -38,12 +43,7 @@ async function main() {
 //     { name: '水中體適能', description: '對膝蓋友善的全身運動', start_at: '2026-08-08 10:00:00', end_at: '2026-08-08 11:00:00', max_participants: 10, user: ming, skill: swimming },
 //   ])
 
-  // 3. 組合包（單表，跟上面三張沒關聯）
-//   await packageRepo.save([
-//     { name: '7 堂組合包方案', credit_amount: 7, price: 1400 },
-//     { name: '14 堂組合包方案', credit_amount: 14, price: 2520 },
-//     { name: '21 堂組合包方案', credit_amount: 21, price: 4800 },
-//   ])
+
 
   console.log('🌱 seed init 完成')
   await dataSource.destroy()
