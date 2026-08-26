@@ -18,7 +18,7 @@ const skillService = {
         throw responseMessage.error("資料重複",409);
     }
     const result = await skillRepository.insertOne(name.trim())
-    return responseMessage.success(result)
+    return responseMessage.success(result,201)
   },
 
   async deleteSkill(skillId) {
