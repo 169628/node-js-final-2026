@@ -5,6 +5,7 @@ const app = express()
 
 const skillRouter = require("./routes/skill")
 const creditPackageRouter = require("./routes/creditPackage")
+const userRouter = require("./routes/user")
 
 app.use(cors())          
 app.use(express.json())
@@ -18,6 +19,7 @@ app.get('/healthcheck', (req, res) => {
 // app.use('/api/credit-package', require('./routes/creditPackage'))
 app.use("/api/coaches/skill", skillRouter);
 app.use("/api/credit-package", creditPackageRouter);
+app.use("/api/users", userRouter)
 
 // 404（W3）
 app.use((req, res) => {

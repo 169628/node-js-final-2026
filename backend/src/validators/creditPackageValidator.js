@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const createCreditPackageValidator ={
+const creditPackageValidator ={
 
   createSchema: Joi.object({
     name: Joi.string().trim().min(1).max(50).required(),
@@ -11,4 +11,4 @@ const createCreditPackageValidator ={
   idSchema: Joi.string().uuid().required()
 }
 
-module.exports = createCreditPackageValidator;
+module.exports = creditPackageValidator;

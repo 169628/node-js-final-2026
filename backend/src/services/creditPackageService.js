@@ -1,6 +1,6 @@
 const creditPackageRepository = require("../repositories/creditPackageRepository")
 const responseMessage = require("../utils/responseMessage")
-const createCreditPackageValidator = require("../validators/creditPackageValidator");
+const creditPackageValidator = require("../validators/creditPackageValidator");
 
 const creditPackageService = {
   async getAllCreditPackages() {
@@ -8,9 +8,9 @@ const creditPackageService = {
     return responseMessage.success(result)
   },
 
-  async createCreditPackage({ name, credit_amount, price }) {
+  async createCreditPackage(data) {
 
-    const { error, value } = createCreditPackageValidator.createSchema.validate({ name, credit_amount, price });
+    const { error, value } = creditPackageValidator.createSchema.validate(data);
 
     if (error) {
       throw responseMessage.error("欄位未填寫正確");
@@ -26,7 +26,7 @@ const creditPackageService = {
 
   async deleteSkill(creditPackageId) {
 
-    const { error, value } = createCreditPackageValidator.idSchema.validate(creditPackageId)
+    const { error, value } = creditPackageValidator.idSchema.validate(creditPackageId)
     
     if (error) {
       throw responseMessage.error("ID錯誤");
