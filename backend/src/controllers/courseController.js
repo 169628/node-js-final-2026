@@ -47,6 +47,24 @@ const courseController = {
         }
     },
 
+    async createBooking(req, res, next) {
+        try {
+            const { statusCode, body } = await courseService.createBooking(req.user.id, req.params.courseId);
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    async deleteBooking(req, res, next) {
+        try {
+            const { statusCode, body } = await courseService.deleteBooking(req.user.id, req.params.courseId);
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
+
 };
 
 module.exports = courseController;

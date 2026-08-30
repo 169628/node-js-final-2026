@@ -1,9 +1,11 @@
 const bcrypt = require("bcryptjs");
-const { MoreThan, LessThanOrEqual } = require("typeorm");
+const { MoreThan, LessThanOrEqual, IsNull } = require("typeorm");
 
 const userRepository = require("../repositories/userRepository")
 const courseRepository = require("../repositories/courseRepository")
 const skillRepository = require("../repositories/skillRepository")
+const courseBookingRepository = require("../repositories/courseBookingRepository")
+const creditPurchaseRepository = require("../repositories/creditPurchaseRepository")
 const responseMessage = require("../utils/responseMessage")
 const courseValidator = require("../validators/courseValidator");
 
@@ -37,19 +39,18 @@ const courseService = {
 
         const courses = await courseRepository.selectAll({ user:{ id: value } })
 
-        courses.map((i)=>{
-            const today = new Date()
-            if (today < i.start_at){
-                i.status = "尚未開始"
-            } else if (today <= i.end_at){
-                i.status = "進行中"
-            } else { 
-                i.status = "已結束"
+        const now = new Date()
+        for (const course of courses) {
+            if (now < course.start_at){
+                course.status = "尚未開始"
+            } else if (now <= course.end_at){
+                course.status = "進行中"
+            } else {
+                course.status = "已結束"
             }
-            // 還沒有寫到報名與取消，先暫寫一個值
-            i.participants = 0
-            return i
-        })
+            // 報名人數只算沒取消的
+            course.participants = await courseBookingRepository.countAll({ course: { id: course.id }, cancelled_at: IsNull() })
+        }
 
         return responseMessage.success(courses)
 
@@ -115,6 +116,71 @@ const courseService = {
         const { skill, ...restCourse } = _course;
         return responseMessage.success({course: { ...restCourse, skill_id: skill?.id }})
 
+
+    },
+
+    async createBooking( userId, courseId ) {
+
+        const { error, value } = courseValidator.bookingSchema.validate({ user_id: userId, course_id: courseId });
+        if (error) {
+            throw responseMessage.error("ID錯誤");
+        }
+
+        // ① 查無課程
+        const course = await courseRepository.selectOne({ id: value.course_id })
+        if (!course){
+            throw responseMessage.error("ID錯誤");
+        }
+
+        // ② 已報名（含已取消）
+        const booking = await courseBookingRepository.selectOne({ user: { id: value.user_id }, course: { id: value.course_id } })
+        if (booking){
+            throw responseMessage.error("已經報名過此課程");
+        }
+
+        // ③ 剩餘堂數
+        const creditPurchases = await creditPurchaseRepository.selectAll({ user: { id: value.user_id } })
+        const creditTotal = creditPurchases.reduce((total, i) => total + i.purchased_credits, 0)
+        const creditUsage = await courseBookingRepository.countAll({ user: { id: value.user_id }, cancelled_at: IsNull() })
+        if (creditTotal - creditUsage <= 0){
+            throw responseMessage.error("已無可使用堂數");
+        }
+
+        // ④ 最大人數
+        const participants = await courseBookingRepository.countAll({ course: { id: value.course_id }, cancelled_at: IsNull() })
+        if (participants >= course.max_participants){
+            throw responseMessage.error("已達最大參加人數，無法參加");
+        }
+
+        await courseBookingRepository.insertOne({ user: { id: value.user_id }, course: { id: value.course_id } })
+
+        return responseMessage.success(null, 201)
+
+    },
+
+    async deleteBooking( userId, courseId ) {
+
+        const { error, value } = courseValidator.bookingSchema.validate({ user_id: userId, course_id: courseId });
+        if (error) {
+            throw responseMessage.error("ID錯誤");
+        }
+
+        const booking = await courseBookingRepository.selectOne({
+            user: { id: value.user_id },
+            course: { id: value.course_id },
+            cancelled_at: IsNull(),
+        })
+        if (!booking){
+            throw responseMessage.error("ID錯誤");
+        }
+
+        const result = await courseBookingRepository.updateOne(booking.id, { cancelled_at: new Date() })
+
+        if(result.affected === 0){
+            throw responseMessage.error("取消失敗");
+        }
+
+        return responseMessage.success(null)
 
     },
 

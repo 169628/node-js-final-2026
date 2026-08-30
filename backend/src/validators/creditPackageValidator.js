@@ -8,7 +8,12 @@ const creditPackageValidator ={
     price: Joi.number().min(1).required(),
   }),
   
-  idSchema: Joi.string().uuid().required()
+  idSchema: Joi.string().uuid().required(),
+
+  purchaseSchema: Joi.object({
+    user_id: Joi.string().uuid().required(),
+    credit_package_id: Joi.string().uuid().required(),
+  }),
 }
 
 module.exports = creditPackageValidator;

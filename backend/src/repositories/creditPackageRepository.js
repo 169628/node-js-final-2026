@@ -9,8 +9,8 @@ const creditPackageRepository = {
     return creditPackages;
   },
 
-  async selectOne(name) {
-    const creditPackage = await creditPackageRepo.findOneBy({ name });
+  async selectOne(data) {
+    const creditPackage = await creditPackageRepo.findOneBy(data);
     return creditPackage;
   },
 

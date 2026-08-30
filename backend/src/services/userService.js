@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const userRepository = require("../repositories/userRepository")
+const creditPurchaseRepository = require("../repositories/creditPurchaseRepository")
+const courseBookingRepository = require("../repositories/courseBookingRepository")
 const responseMessage = require("../utils/responseMessage")
 const userValidator = require("../validators/userValidator");
 const config = require("../config/index");
@@ -148,6 +150,59 @@ const userService = {
         );
 
         return responseMessage.success({ token, user: { name: user.name } },201)
+
+    },
+
+    async getCreditPurchases(userId) {
+
+        const { error, value } = userValidator.idSchema.validate(userId);
+
+        if (error) {
+        throw responseMessage.error("ID錯誤");
+        }
+
+        const creditPurchases = await creditPurchaseRepository.selectAll({ user: { id: value } })
+
+        const result = creditPurchases.map((i) => ({
+            name: i.creditPackage?.name,
+            purchased_credits: i.purchased_credits,
+            price_paid: i.price_paid,
+            purchase_at: i.purchase_at,
+        }))
+
+        return responseMessage.success(result)
+
+    },
+
+    async getCourseBookings(userId) {
+
+        const { error, value } = userValidator.idSchema.validate(userId);
+
+        if (error) {
+        throw responseMessage.error("ID錯誤");
+        }
+
+        const creditPurchases = await creditPurchaseRepository.selectAll({ user: { id: value } })
+        const creditTotal = creditPurchases.reduce((total, i) => total + i.purchased_credits, 0)
+
+        const courseBookings = await courseBookingRepository.selectAll({ user: { id: value } })
+        const creditUsage = courseBookings.filter((i) => !i.cancelled_at).length
+
+        const result = courseBookings.map((i) => ({
+            course_id: i.course?.id,
+            name: i.course?.name,
+            start_at: i.course?.start_at,
+            end_at: i.course?.end_at,
+            meeting_url: i.course?.meeting_url,
+            coach_name: i.course?.user?.name,
+            cancelled_at: i.cancelled_at,
+        }))
+
+        return responseMessage.success({
+            credit_remain: creditTotal - creditUsage,
+            credit_usage: creditUsage,
+            course_booking: result,
+        })
 
     },
 

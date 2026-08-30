@@ -18,6 +18,15 @@ const creditPackageController = {
         }
     },
 
+    async purchaseCreditPackage(req, res, next) {
+        try {
+            const { statusCode, body } = await creditPackageService.purchaseCreditPackage(req.user.id, req.params.creditPackageId);
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
+
     async deleteCreditPackage(req, res, next) {
         try {
             const { statusCode, body } = await creditPackageService.deleteSkill(req.params.creditPackageId);

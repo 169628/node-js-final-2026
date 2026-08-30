@@ -46,6 +46,24 @@ const userController = {
             next(err);
         }
     },
+
+    async getCreditPurchases(req, res, next) {
+        try {
+            const { statusCode, body } = await userService.getCreditPurchases(req.user.id);
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    async getCourseBookings(req, res, next) {
+        try {
+            const { statusCode, body } = await userService.getCourseBookings(req.user.id);
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
 };
 
 module.exports = userController;

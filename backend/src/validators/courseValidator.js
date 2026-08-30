@@ -34,6 +34,11 @@ const courseValidator ={
   
   idSchema: Joi.string().uuid().required(),
 
+  bookingSchema: Joi.object({
+    user_id: Joi.string().uuid().required(),
+    course_id: Joi.string().uuid().required(),
+  }),
+
 }
 
 module.exports = courseValidator;
