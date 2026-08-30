@@ -14,8 +14,8 @@ const creditPackageRepository = {
     return creditPackage;
   },
 
-  async insertOne({ name, credit_amount, price }) {
-    const creditPackage = await creditPackageRepo.save({ name, credit_amount, price });
+  async insertOne(data) {
+    const creditPackage = await creditPackageRepo.save(data);
     return creditPackage;
   },
 

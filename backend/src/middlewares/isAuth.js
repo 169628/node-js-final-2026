@@ -18,15 +18,7 @@ async function isAuth(req, res, next) {
     // 2. 驗證 token
     const decoded = jwt.verify(token, jwtSecret );
 
-    // 3. 用 decoded.id 查 User
-    // const userRepo = dataSource.getRepository("User");
-    // const user = await userRepo.findOneBy({ id: decoded.id });
-    // if (!user) {
-    //   return next(appError(401, "無效的 token"));
-    // }
-
-    // 4. 掛到 req.user，後續 controller 就能用
-    // req.user = user;
+    // 3. 掛到 req.user，後續 controller 就能用
     req.user = { id: decoded.id, role: decoded.role };
     next();
   } catch (err) {

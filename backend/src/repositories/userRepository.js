@@ -1,22 +1,22 @@
 const { dataSource } = require("../../db/data-source");
-const userPackageRepo = dataSource.getRepository("User");
+const userRepo = dataSource.getRepository("User");
 
-const userPackageRepository = {
+const userRepository = {
 
   async selectOne(data) {
-    const user = await userPackageRepo.findOneBy(data);
+    const user = await userRepo.findOneBy(data);
     return user;
   },
 
-  async insertOne({ name, email, password, role }) {
-    const user = await userPackageRepo.save({ name, email, password, role });
+  async insertOne(data) {
+    const user = await userRepo.save(data);
     return user;
   },
 
   async updateOne(userId, data) {
-      const result = await userPackageRepo.update(userId, data);
+      const result = await userRepo.update(userId, data);
       return result;
   },
 };
 
-module.exports = userPackageRepository;
+module.exports = userRepository;
