@@ -2,6 +2,11 @@ const Joi = require("joi");
 
 const urlPattern = /^https:\/\//;
 
+const monthNames = [
+  "january", "february", "march", "april", "may", "june",
+  "july", "august", "september", "october", "november", "december",
+];
+
 const coachValidator ={
 
   createSchema: Joi.object({
@@ -25,6 +30,13 @@ const coachValidator ={
     per: Joi.number().integer().min(0).required(),
     page: Joi.number().integer().min(0).required(),
   }),
+
+  revenueSchema: Joi.object({
+    user_id: Joi.string().uuid().required(),
+    month: Joi.string().valid(...monthNames).required(),
+  }),
+
+  monthNames,
 
 }
 

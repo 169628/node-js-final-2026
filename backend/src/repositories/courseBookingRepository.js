@@ -17,6 +17,19 @@ const courseBookingRepository = {
     return courseBookings;
   },
 
+  // 原生 SQL
+  async selectMonthlyByCoach(coachUserId, year, month) {
+    const courseBookings = await dataSource.query(
+      `SELECT cb.user_id FROM "COURSE_BOOKING" cb
+       JOIN "COURSE" c ON c.id = cb.course_id
+       WHERE c.user_id = $1 AND cb.cancelled_at IS NULL
+         AND EXTRACT(YEAR FROM cb.booking_at) = $2
+         AND EXTRACT(MONTH FROM cb.booking_at) = $3`,
+      [coachUserId, year, month],
+    );
+    return courseBookings;
+  },
+
   async countAll(data) {
     const count = await courseBookingRepo.count({ where: data });
     return count;

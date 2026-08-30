@@ -5,6 +5,7 @@ const isAuth = require("../middlewares/isAuth")
 const isCoach = require("../middlewares/isCoach")
 
 router.post("/:userId", adminController.updateRole);
+router.get("/revenue",isAuth,isCoach,adminController.getRevenue);
 router.get("/",isAuth,isCoach,adminController.getProfile);
 router.put("/",isAuth,isCoach,adminController.updateProfile);
 

@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 
 const userRepository = require("../repositories/userRepository")
 const coachRepository = require("../repositories/coachRepository")
+const courseBookingRepository = require("../repositories/courseBookingRepository")
+const creditPackageRepository = require("../repositories/creditPackageRepository")
 const responseMessage = require("../utils/responseMessage")
 const coachValidator = require("../validators/coachValidator");
 
@@ -79,6 +81,32 @@ const adminService = {
         }
 
         return responseMessage.success({ ...coachData, id: coach.id })
+
+    },
+
+    async getRevenue( userId, data ) {
+
+        const { error, value } = coachValidator.revenueSchema.validate({ ...data, user_id: userId});
+        if (error) {
+            throw responseMessage.error("欄位未填寫正確");
+        }
+
+        const year = new Date().getFullYear();
+        const month = coachValidator.monthNames.indexOf(value.month) + 1;
+        const bookings = await courseBookingRepository.selectMonthlyByCoach(value.user_id, year, month)
+
+        const creditPackages = await creditPackageRepository.selectAll()
+        const totalPrice = creditPackages.reduce((total, i) => total + Number(i.price), 0)
+        const totalCredits = creditPackages.reduce((total, i) => total + Number(i.credit_amount), 0)
+        const perCreditPrice = totalCredits > 0 ? totalPrice / totalCredits : 0
+
+        return responseMessage.success({
+            total: {
+                revenue: Math.floor(bookings.length * perCreditPrice),
+                participants: new Set(bookings.map((booking) => booking.user_id)).size,
+                course_count: bookings.length,
+            }
+        })
 
     },
 

@@ -20,6 +20,15 @@ const adminController = {
         }
     },
 
+    async getRevenue(req, res, next) {
+        try {
+            const { statusCode, body } = await adminService.getRevenue(req.user.id, req.query);
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
+
     async updateProfile(req, res, next) {
         try {
             const { statusCode, body } = await adminService.updateProfile(req.user.id,req.body);
