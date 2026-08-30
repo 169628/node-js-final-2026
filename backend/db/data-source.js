@@ -7,6 +7,7 @@ const User = require("./entities/User")
 const Course = require("./entities/Course")
 const Coach = require("./entities/Coach")
 const CreditPurchase = require("./entities/CreditPurchase")
+const CourseBooking = require("./entities/CourseBooking")
 
 const { host,port,username,password,database,synchronize,ssl } = config.db
 
@@ -25,7 +26,8 @@ const dataSource = new DataSource({
     User,
     Course,
     Coach,
-    CreditPurchase
+    CreditPurchase,
+    CourseBooking
   ],
   migrations: [
     __dirname + '/migrations/*.js'
