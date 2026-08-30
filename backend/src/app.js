@@ -7,7 +7,9 @@ const skillRouter = require("./routes/skill")
 const creditPackageRouter = require("./routes/creditPackage")
 const userRouter = require("./routes/user")
 const adminRouter = require("./routes/admin")
-const courseRouter = require("./routes/course")
+const adminCourseRouter = require("./routes/adminCourse")
+const coachRouter = require("./routes/coach")
+const coursesRouter = require("./routes/courses")
 
 app.use(cors())          
 app.use(express.json())
@@ -19,9 +21,11 @@ app.get('/healthcheck', (req, res) => {
 
 // 之後每完成一個里程碑，路由就多掛一條：
 // app.use('/api/credit-package', require('./routes/creditPackage'))
-app.use("/api/admin/coaches/courses", courseRouter)
+app.use("/api/admin/coaches/courses", adminCourseRouter)
 app.use("/api/admin/coaches", adminRouter)
 app.use("/api/coaches/skill", skillRouter);
+app.use("/api/coaches", coachRouter);
+app.use("/api/courses", coursesRouter);
 app.use("/api/credit-package", creditPackageRouter);
 app.use("/api/users", userRouter)
 

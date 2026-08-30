@@ -29,6 +29,15 @@ const courseController = {
         }
     },
 
+    async getOpeningCourses(req, res, next) {
+        try {
+            const { statusCode, body } = await courseService.getOpeningCourses();
+            res.status(statusCode).json(body);
+        } catch (err) {
+            next(err);
+        }
+    },
+
     async updateCourse(req, res, next) {
         try {
             const { statusCode, body } = await courseService.updateCourse(req.user.id, req.params.courseId, req.body);

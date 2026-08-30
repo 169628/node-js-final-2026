@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const { MoreThan, LessThanOrEqual } = require("typeorm");
 
 const userRepository = require("../repositories/userRepository")
 const courseRepository = require("../repositories/courseRepository")
@@ -68,6 +69,26 @@ const courseService = {
         const { skill, ...courseData } = course;
 
         return responseMessage.success({ ...courseData, skill_id: skill?.id, skill_name: skill?.name });
+    },
+
+    async getOpeningCourses() {
+
+        const now = new Date();
+        const courses = await courseRepository.selectAll({ start_at: LessThanOrEqual(now), end_at: MoreThan(now) });
+
+        const result = courses.map((course) => ({
+            id: course.id,
+            name: course.name,
+            description: course.description,
+            start_at: course.start_at,
+            end_at: course.end_at,
+            max_participants: course.max_participants,
+            coach_name: course.user?.name,
+            skill_name: course.skill?.name,
+        }));
+
+        return responseMessage.success(result);
+
     },
 
     async updateCourse( userId, courseId, data ) {

@@ -9,7 +9,7 @@ const courseRepository = {
   },
 
   async selectAll(data) {
-    const courses = await courseRepo.findBy(data);
+    const courses = await courseRepo.find({ where: data, relations: { skill: true, user: true } });
     return courses;
   },
 

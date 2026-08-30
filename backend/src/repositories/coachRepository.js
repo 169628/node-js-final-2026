@@ -4,8 +4,17 @@ const coachRepo = dataSource.getRepository("Coach");
 const coachRepository = {
 
   async selectOne(data) {
-    const coach = await coachRepo.findOneBy(data);
+    const coach = await coachRepo.findOne({ where: data, relations: { user: true } });
     return coach;
+  },
+
+  async selectAll({ skip, limit }) {
+    const coaches = await coachRepo.find({
+      relations: { user: true },
+      skip,
+      take: limit,
+    });
+    return coaches;
   },
 
   async insertOne(data) {

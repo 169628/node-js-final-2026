@@ -1,3 +1,4 @@
+const { In } = require("typeorm");
 const { dataSource } = require("../../db/data-source");
 const skillRepo = dataSource.getRepository("Skill");
 
@@ -7,6 +8,14 @@ const skillRepository = {
       select: { id: true, name: true },
       order: { created_at: "ASC" },
     });
+    return skills;
+  },
+
+  async selectByIds(ids) {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+    const skills = await skillRepo.findBy({ id: In(ids) });
     return skills;
   },
 

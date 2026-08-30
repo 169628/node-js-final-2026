@@ -21,6 +21,11 @@ const coachValidator ={
   
   idSchema: Joi.string().uuid().required(),
 
+  listSchema: Joi.object({
+    per: Joi.number().integer().min(0).required(),
+    page: Joi.number().integer().min(0).required(),
+  }),
+
 }
 
 module.exports = coachValidator;
